@@ -1,0 +1,15 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa tekstikenttään uuden muistiinpanon
+ja painaa talleta-nappia
+end note
+selain->palvelin: POST fullstack-exampleapp.herokuapp.com/new_note_spa
+note left of palvelin
+Palautetaan selaimelle data JSON-muodossa
+end note
+palvelin->selain: status 201, application/json
+
+note left of selain
+ selain näyttää palvelimen palauttaman HTML:n
+lisäksi uuden muistiinpanon
+end note

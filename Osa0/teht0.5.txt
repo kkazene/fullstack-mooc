@@ -1,0 +1,24 @@
+kayttaja->selain:
+note left of selain
+kayttaja kirjoittaa tekstikenttään uuden muistiinpanon
+ja painaa talleta-nappia
+end note
+selain->palvelin: ETfullstack-exampleapp.herokuapp.com/spa
+note left of palvelin
+muodostetaan html
+end note
+palvelin->selain: status 200, palauttaa HTML
+
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/main.css
+palvelin->selain: status 200, text/css
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/spa.js
+palvelin->selain: status 200, application/javascript
+
+selain->palvelin: GET fullstack-exampleapp.herokuapp.com/data.json
+palvelin->selain: status 200, application/json
+
+note left of selain
+ selain näyttää palvelimen palauttaman HTML:n
+end note
