@@ -7,13 +7,6 @@ const Button = ({ handleClick, text }) => (
   </button>
 )
 
-const Anecdote = ({ anecdote, votes }) => (
-  <div>
-    {anecdote}<br />
-    <p>has {votes} votes</p>
-  </div>
-)
-
 class App extends React.Component {
   constructor(props) {
     super(props)
@@ -25,7 +18,6 @@ class App extends React.Component {
 
   render() {
     const { points, selected } = this.state
-    const indexOfMaxValue = points.indexOf(Math.max(...points));
     const handleVote = () => {
       const newPoints = [...points]
       newPoints[selected] += 1
@@ -37,11 +29,10 @@ class App extends React.Component {
     }
     return (
       <div>
-        <Anecdote anecdote={this.props.anecdotes[selected]} votes={points[selected]} />
+        {this.props.anecdotes[selected]}<br />
+        <p>has {points[selected]} votes</p>
         <Button handleClick={() => handleVote()} text={'Vote'} />
         <Button handleClick={() => handleClick()} text={'Next anecdote'} />
-        <h1>anecdote with most votes:</h1>
-        <Anecdote anecdote={this.props.anecdotes[indexOfMaxValue]} votes={points[indexOfMaxValue]} />
       </div>
     )
   }

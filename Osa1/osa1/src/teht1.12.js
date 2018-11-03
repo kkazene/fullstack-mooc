@@ -1,47 +1,23 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-const Button = ({ handleClick, text }) => (
-  <button onClick={handleClick}>
-    {text}
-  </button>
-)
-
-const Anecdote = ({ anecdote, votes }) => (
-  <div>
-    {anecdote}<br />
-    <p>has {votes} votes</p>
-  </div>
-)
-
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      selected: 0,
-      points: [0, 0, 0, 0, 0, 0]
+      selected: 0
     }
   }
 
   render() {
-    const { points, selected } = this.state
-    const indexOfMaxValue = points.indexOf(Math.max(...points));
-    const handleVote = () => {
-      const newPoints = [...points]
-      newPoints[selected] += 1
-      this.setState({ points: newPoints })
-    }
     const handleClick = () => {
       const nextNumber = Math.floor(Math.random() * 6)
       this.setState({ selected: nextNumber })
     }
     return (
       <div>
-        <Anecdote anecdote={this.props.anecdotes[selected]} votes={points[selected]} />
-        <Button handleClick={() => handleVote()} text={'Vote'} />
-        <Button handleClick={() => handleClick()} text={'Next anecdote'} />
-        <h1>anecdote with most votes:</h1>
-        <Anecdote anecdote={this.props.anecdotes[indexOfMaxValue]} votes={points[indexOfMaxValue]} />
+        {this.props.anecdotes[this.state.selected]}<br />
+        <button onClick={() => handleClick()}>Next anecdote</button>
       </div>
     )
   }
