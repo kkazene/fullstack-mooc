@@ -5,7 +5,7 @@ const User = require('../models/user')
 usersRouter.get('/', async (request, response) => {
   try {
     const users = await User.find({})
-    response.json(users)
+    response.json(users.map(User.format))
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong' })
@@ -28,7 +28,7 @@ usersRouter.post('/', async (request, response) => {
 
     const savedUser = await user.save()
 
-    response.status(201).json(savedUser)
+    response.status(201).json(User.format(savedUser))
   } catch (exception) {
     response.status(500).json({ error: 'something went wrong' })
   }

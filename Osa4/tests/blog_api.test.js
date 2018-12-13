@@ -5,7 +5,7 @@ const User = require('../models/user')
 const helper = require('./test_helper')
 const api = supertest(app)
 
-describe.skip('API tests', () => {
+describe('API tests', () => {
   beforeAll(async () => {
     await Blog.remove({})
 
@@ -96,7 +96,7 @@ describe.skip('API tests', () => {
   })
 
 })
-describe.skip('note deletion', async() => {
+describe('note deletion', async() => {
   let addedBlog
 
   beforeEach(async () => {
@@ -139,7 +139,7 @@ describe.skip('note deletion', async() => {
   })
 })
 
-describe.skip('note updates', async() => {
+describe('note updates', async() => {
   let addedBlog
 
   beforeAll(async () => {
@@ -191,7 +191,7 @@ describe.skip('note updates', async() => {
     expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length)
   })
 })
-describe.only('when there is initially one user at db', async () => {
+describe('when there is initially one user at db', async () => {
   beforeAll(async () => {
     await User.remove({})
     const user = new User({ username: 'root', password: 'sekret' })

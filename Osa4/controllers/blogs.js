@@ -4,7 +4,7 @@ const Blog = require('../models/blog')
 blogsRouter.get('/', async (request, response) => {
   try {
     const blogs = await Blog.find({})
-    response.json(blogs)
+    response.json(blogs.map(Blog.format))
   } catch (exception) {
     console.log(exception)
     response.status(500).json({ error: 'something went wrong' })
@@ -21,7 +21,7 @@ blogsRouter.post('/', async (request, response) => {
     const blog = new Blog(body)
     const savedBlog = await blog.save()
 
-    response.status(201).json(savedBlog)
+    response.status(201).json(Blog.format(savedBlog))
   } catch (exception) {
     response.status(500).json({ error: 'something went wrong' })
   }
@@ -43,7 +43,7 @@ blogsRouter.put('/:id', async (request, response) => {
       blog.likes = request.params.likes
 
     const savedBlog = await blog.save()
-    response.status(200).json(savedBlog)
+    response.status(200).json(Blog.format(savedBlog))
   } catch (exception) {
     response.status(400).json({ error: 'malformatted id' })
   }
