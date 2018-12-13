@@ -98,6 +98,28 @@ describe('API tests', () => {
     expect(response.body.length).toBe(initialBlogs.length + 1)
     expect(titles).toContain('A Tale of Dudes')
   })
+
+  test('a blog can be added without likes', async () => {
+    const newBlog = {
+      title: 'Another Tale of Dudes',
+      author: 'Duder McDuderface',
+      url: 'http://duder.face.com/yes/itsveryreal.html'
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const response = await api
+      .get('/api/blogs')
+
+    const latestLikes = response.body[response.body.length-1].likes
+
+    expect(response.body.length).toBe(initialBlogs.length + 2)
+    expect(latestLikes).toBe(0)
+  })
 })
 
 afterAll(() => {
