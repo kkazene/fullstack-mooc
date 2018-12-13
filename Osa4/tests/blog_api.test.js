@@ -218,6 +218,67 @@ describe('when there is initially one user at db', async () => {
     const usernames = usersAfterOperation.map(u => u.username)
     expect(usernames).toContain(newUser.username)
   })
+
+  test('POST /api/users fails with an already in use username', async () => {
+    const usersBeforeOperation = await helper.usersInDb()
+
+    const newUser = {
+      username: 'root',
+      name: 'Aivan Uusi Nimi',
+      password: 'salakala'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const usersAfterOperation = await helper.usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+    const names = usersAfterOperation.map(u => u.name)
+    expect(names).not.toContain(newUser.name)
+  })
+
+  test('POST /api/users fails with a password of less than 3 chars', async () => {
+    const usersBeforeOperation = await helper.usersInDb()
+
+    const newUser = {
+      username: 'uusijee',
+      name: 'Aivan Uusi Nimi',
+      password: 'mo'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(400)
+
+    const usersAfterOperation = await helper.usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length)
+    const usernames = usersAfterOperation.map(u => u.username)
+    expect(usernames).not.toContain(newUser.username)
+  })
+
+  test('POST /api/users adds adult true if not specified', async () => {
+    const usersBeforeOperation = await helper.usersInDb()
+
+    const newUser = {
+      username: 'uuusijee',
+      name: 'Aivan Uusi Nimi',
+      password: 'moii'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAfterOperation = await helper.usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length + 1)
+    const lastAdult = usersAfterOperation[usersAfterOperation.length-1].adult
+    expect(lastAdult).toBe(true)
+  })
 })
 
 afterAll(() => {
