@@ -106,19 +106,44 @@ describe('API tests', () => {
       url: 'http://duder.face.com/yes/itsveryreal.html'
     }
 
+    const blogsBeforeOperation = await api
+      .get('/api/blogs')
+
     await api
       .post('/api/blogs')
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
 
-    const response = await api
+    const blogsAfterOperation = await api
       .get('/api/blogs')
 
-    const latestLikes = response.body[response.body.length-1].likes
+    const latestLikes = blogsAfterOperation.body[blogsAfterOperation.body.length-1].likes
 
-    expect(response.body.length).toBe(initialBlogs.length + 2)
+    expect(blogsAfterOperation.body.length).toBe(blogsBeforeOperation.body.length + 1)
     expect(latestLikes).toBe(0)
+  })
+
+  test('a blog can\'t be added without title and url', async () => {
+    const newBlog = {
+      author: 'Somedude WithnoTitle'
+    }
+    const blogsBeforeOperation = await api
+      .get('/api/blogs')
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(400)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await api
+      .get('/api/blogs')
+
+    const authors = blogsAfterOperation.body.map(r => r.author)
+
+    expect(blogsAfterOperation.body.length).toBe(blogsBeforeOperation.body.length)
+    expect(authors).not.toContain('Somedude WithnoTitle')
   })
 })
 
