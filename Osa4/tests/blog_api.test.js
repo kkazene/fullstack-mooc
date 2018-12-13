@@ -138,6 +138,59 @@ describe('note deletion', async() => {
   })
 })
 
+describe('note updates', async() => {
+  let addedBlog
+
+  beforeAll(async () => {
+    addedBlog = new Blog({
+      author: 'Jaba jababa',
+      title: 'Sometitle',
+      url: 'http://some.thing/yes'
+    })
+    await addedBlog.save()
+  })
+
+  test('a blog can be updated', async () => {
+    const updatedBlog = {
+      _id: addedBlog._id,
+      likes: 2000
+    }
+    const blogsBeforeOperation = await helper.blogsInDb()
+
+    await api
+      .put(`/api/blogs/${updatedBlog._id}`)
+      .send(updatedBlog)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const blogsAfterOperation = await helper.blogsInDb()
+
+    const likes = blogsAfterOperation.map(r => r.likes)
+
+    expect(likes).toContain(addedBlog.likes)
+    expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length)
+  })
+
+  test('a blog with malformatted id can\'t be updated', async () => {
+    const updatedBlog = {
+      likes: 4000
+    }
+    const blogsBeforeOperation = await helper.blogsInDb()
+
+    await api
+      .put('/api/blogs/notreallyanid')
+      .send(updatedBlog)
+      .expect(400)
+
+    const blogsAfterOperation = await helper.blogsInDb()
+
+    const likes = blogsAfterOperation.map(r => r.likes)
+
+    expect(likes).not.toContain(updatedBlog.likes)
+    expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length)
+  })
+})
+
 afterAll(() => {
   server.close()
 })
