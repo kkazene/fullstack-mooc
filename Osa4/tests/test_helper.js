@@ -51,15 +51,6 @@ const initialBlogs = [
   }
 ]
 
-// const format = (blog) => {
-//   return {
-//     author: blog.author,
-//     title: blog.title,
-//     url: blog.url,
-//     id: blog._id
-//   }
-// }
-
 const blogsInDb = async () => {
   const blogs = await Blog.find({})
   return blogs

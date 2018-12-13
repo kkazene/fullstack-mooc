@@ -94,7 +94,50 @@ describe('API tests', () => {
     expect(authors).not.toContain('Somedude WithnoTitle')
   })
 
-  afterAll(() => {
-    server.close()
+})
+describe('note deletion', async() => {
+  let addedBlog
+
+  beforeEach(async () => {
+    addedBlog = new Blog({
+      author: 'Jaba jababa',
+      title: 'Sometitle',
+      url: 'http://some.thing/yes'
+    })
+    await addedBlog.save()
   })
+
+  test('a blog can be deleted', async () => {
+    const blogsBeforeOperation = await helper.blogsInDb()
+
+    await api
+      .delete(`/api/blogs/${addedBlog._id}`)
+      .expect(204)
+
+    const blogsAfterOperation = await helper.blogsInDb()
+
+    const titles = blogsAfterOperation.map(r => r.title)
+
+    expect(titles).not.toContain(addedBlog.title)
+    expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length - 1)
+  })
+
+  test('a blog with malformatted id can\'t be deleted', async () => {
+    const blogsBeforeOperation = await helper.blogsInDb()
+
+    await api
+      .delete('/api/blogs/somebogusid')
+      .expect(400)
+
+    const blogsAfterOperation = await helper.blogsInDb()
+
+    const titles = blogsAfterOperation.map(r => r.title)
+
+    expect(titles).toContain(addedBlog.title)
+    expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length)
+  })
+})
+
+afterAll(() => {
+  server.close()
 })
