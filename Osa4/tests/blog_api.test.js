@@ -1,10 +1,11 @@
 const supertest = require('supertest')
 const { app, server } = require('../index')
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 const api = supertest(app)
 
-describe('API tests', () => {
+describe.skip('API tests', () => {
   beforeAll(async () => {
     await Blog.remove({})
 
@@ -95,7 +96,7 @@ describe('API tests', () => {
   })
 
 })
-describe('note deletion', async() => {
+describe.skip('note deletion', async() => {
   let addedBlog
 
   beforeEach(async () => {
@@ -138,7 +139,7 @@ describe('note deletion', async() => {
   })
 })
 
-describe('note updates', async() => {
+describe.skip('note updates', async() => {
   let addedBlog
 
   beforeAll(async () => {
@@ -188,6 +189,34 @@ describe('note updates', async() => {
 
     expect(likes).not.toContain(updatedBlog.likes)
     expect(blogsAfterOperation.length).toBe(blogsBeforeOperation.length)
+  })
+})
+describe.only('when there is initially one user at db', async () => {
+  beforeAll(async () => {
+    await User.remove({})
+    const user = new User({ username: 'root', password: 'sekret' })
+    await user.save()
+  })
+
+  test('POST /api/users succeeds with a fresh username', async () => {
+    const usersBeforeOperation = await helper.usersInDb()
+
+    const newUser = {
+      username: 'joku',
+      name: 'Joku Nimi',
+      password: 'salakala'
+    }
+
+    await api
+      .post('/api/users')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const usersAfterOperation = await helper.usersInDb()
+    expect(usersAfterOperation.length).toBe(usersBeforeOperation.length + 1)
+    const usernames = usersAfterOperation.map(u => u.username)
+    expect(usernames).toContain(newUser.username)
   })
 })
 
