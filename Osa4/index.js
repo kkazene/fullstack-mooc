@@ -5,6 +5,10 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
+if ( process.env.NODE_ENV !== 'production' ) {
+  require('dotenv').config()
+}
+
 const Blog = mongoose.model('Blog', {
   title: String,
   author: String,
@@ -17,7 +21,7 @@ module.exports = Blog
 app.use(cors())
 app.use(bodyParser.json())
 
-const mongoUrl = 'mongodb://localhost/bloglist'
+const mongoUrl = process.env.MONGODB_URI
 mongoose.connect(mongoUrl)
 
 app.get('/api/blogs', (request, response) => {
