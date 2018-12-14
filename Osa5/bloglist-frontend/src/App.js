@@ -1,6 +1,6 @@
 import React from 'react'
 import Blog from './components/Blog'
-import Togglable from './Togglable'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -80,6 +80,7 @@ class App extends React.Component {
     super(props)
     this.state = {
       blogs: [],
+      detailedBlog: null,
       user: null,
       username: '',
       password: '',
@@ -159,11 +160,19 @@ class App extends React.Component {
     }
   }
 
+  toggleDetails = (blog) => {
+    if (this.state.detailedBlog === blog._id) {
+      this.setState({ detailedBlog: '' })
+    } else
+      this.setState({ detailedBlog: blog._id })
+  }
+
   render() {
     const {
       username,
       password,
       blogs,
+      detailedBlog,
       user,
       title,
       author,
@@ -195,9 +204,11 @@ class App extends React.Component {
               />
             </Togglable>
             <h2>Blog list</h2>
-            {blogs.map(blog =>
-              <Blog key={blog._id} blog={blog}/>
-            )}
+            <Blog
+              blogs={blogs}
+              detailedBlog={detailedBlog}
+              toggleDetails={this.toggleDetails}
+            />
           </div>
         }
       </div>
