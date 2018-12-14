@@ -71,11 +71,10 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   try {
     const blog = await Blog.findById(request.params.id)
-    if (blog)
-      blog.likes = request.params.likes
-
-    const savedBlog = await blog.save()
-    response.status(200).json(Blog.format(savedBlog))
+    if (blog) {
+      const savedBlog = await Blog.findByIdAndUpdate(request.params.id, request.body)
+      response.status(200).json(Blog.format(savedBlog))
+    }
   } catch (exception) {
     response.status(400).json({ error: 'malformatted id' })
   }
