@@ -188,6 +188,30 @@ class App extends React.Component {
       }, 5000)
     }
   }
+  deleteBlog = async (blog) => {
+    const result = window.confirm(`delete '${blog.title}' by ${blog.author}?`);
+    if (result) {
+      try {
+        const id = blog._id
+        await blogService.remove(id)
+        const blogs = this.state.blogs.filter(n => n._id !== id)
+        this.setState({
+          blogs,
+          error: `Removed blog ${blog.title}!`
+        })
+        setTimeout(() => {
+          this.setState({ error: null })
+        }, 5000)
+      } catch (e) {
+        this.setState({
+          error: 'Something went wrong!'
+        })
+        setTimeout(() => {
+          this.setState({ error: null })
+        }, 5000)
+      }
+    }
+  }
 
   toggleDetails = (blog) => {
     if (this.state.detailedBlog === blog._id) {
@@ -238,6 +262,7 @@ class App extends React.Component {
               detailedBlog={detailedBlog}
               toggleDetails={this.toggleDetails}
               likeBlog={this.likeBlog}
+              deleteBlog={this.deleteBlog}
             />
           </div>
         }

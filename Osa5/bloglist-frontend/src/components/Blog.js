@@ -13,18 +13,19 @@ const SimpleBlog = ({ blog, toggleDetails }) => (
   </div>
 )
 
-const DetailedBlog = ({ blog, toggleDetails, likeBlog }) => (
-  <div style={blogStyle} onClick={() => toggleDetails(blog)}>
-    <p>{blog.title}: {blog.author}</p>
+const DetailedBlog = ({ blog, toggleDetails, likeBlog, deleteBlog }) => (
+  <div style={blogStyle}>
+    <p onClick={() => toggleDetails(blog)}>{blog.title}: {blog.author}</p>
     <p>{blog.likes} likes <button onClick={() => likeBlog(blog)} >like</button></p>
     {blog.user && <p>added by {blog.user.name}</p>}
+    <button name="delete"onClick={() => deleteBlog(blog)} >delete</button>
   </div>
 )
 
 class Blog extends React.Component {
 
   render() {
-    const { blogs, detailedBlog, toggleDetails, likeBlog } = this.props
+    const { blogs, detailedBlog, toggleDetails, likeBlog, deleteBlog } = this.props
     blogs.sort((a, b) => b.likes - a.likes)
     return (
       <div>
@@ -34,7 +35,8 @@ class Blog extends React.Component {
               key={blog._id}
               blog={blog}
               toggleDetails={toggleDetails}
-              likeBlog={likeBlog} />
+              likeBlog={likeBlog}
+              deleteBlog={deleteBlog} />
             :
             <SimpleBlog
               key={blog._id}
