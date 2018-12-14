@@ -259,6 +259,7 @@ class App extends React.Component {
             <h2>Blog list</h2>
             <Blog
               blogs={blogs}
+              user={user}
               detailedBlog={detailedBlog}
               toggleDetails={this.toggleDetails}
               likeBlog={this.likeBlog}
