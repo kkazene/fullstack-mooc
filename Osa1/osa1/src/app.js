@@ -1,197 +1,62 @@
-import React from 'react';
-import personService from './services/persons'
+import React from 'react'
+import ReactDOM from 'react-dom'
 
-const Notification = ({ error, errorType }) => {
-  if (error === null) {
-    return null
-  }
-  const styles = `message ${errorType}`
-  return (
-    <div className={styles}>
-      {error}
-    </div>
-  )
-}
+const Button = ({ handleClick, text }) => (
+  <button onClick={handleClick}>
+    {text}
+  </button>
+)
 
-const Filter = ({ filterValue, updateFilter }) => (
+const Anecdote = ({ anecdote, votes }) => (
   <div>
-    rajaa näytettäviä: <input value={filterValue} onChange={updateFilter} />
+    {anecdote}<br />
+    <p>has {votes} votes</p>
   </div>
-)
-
-const AddNewForm = ({ newName, newNumber, addNumber, updateName, updateNumber}) => (
-  <form onSubmit={addNumber}>
-    <div>
-      nimi: <input value={newName} onChange={updateName} />
-    </div>
-    <div>
-      ninumero: <input value={newNumber} onChange={updateNumber} />
-    </div>
-    <div>
-      <button type="submit">lisää</button>
-    </div>
-</form>
-)
-
-const PersonsList = ({ persons, removeNumber }) => (
-  <table>
-    <tbody>
-      {persons.map(person =>
-        <tr key={person.name}>
-          <td>{person.name}</td>
-          <td>{person.number}</td>
-          <td><button onClick={() => removeNumber(person)}type="button">poista</button></td>
-        </tr>)
-      }
-    </tbody>
-  </table>
 )
 
 class App extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      persons: [],
-      filterValue: '',
-      newName: '',
-      newNumber: '',
-      error: null,
-      errorType: '',
-    }
-  }
-
-  componentDidMount() {
-    personService
-      .getAll()
-      .then(persons => {
-        this.setState({ persons })
-    }).catch(error => {
-      this.setState({ error: `${error}` })
-      setTimeout(() => {
-        this.setState({error: null})
-      }, 5000)
-    })
-  }
-
-  updateFilter = (e) => {
-    this.setState({ filterValue: e.target.value })
-  }
-
-  updateName = (e) => {
-    this.setState({ newName: e.target.value })
-  }
-  
-  updateNumber = (e) => {
-    this.setState({ newNumber: e.target.value })
-  }
-
-  addNumber = (e) => {
-    e.preventDefault()
-    const { persons, newName, newNumber } = this.state
-    const value = persons.map((per) => { return { name: per.name, id: per.id }})
-    const personObject = ({ name: newName, number: newNumber })
-    const obj = value.filter(per => ( per.name === newName ))
-    if (obj.length) {
-      const id = obj[0].id
-      const result = window.confirm(`${newName} on jo luettelossa, korvataanko vanha numero uudella?`);
-      if (result) {
-        personService.update(id, personObject)
-        .then(updatedPerson => {
-          const persons = this.state.persons.filter(n => n.id !== id)
-          this.setState({
-            persons: persons.concat(updatedPerson),
-            newName: '',
-            newNumber: '',
-            error: `Muokattiin onnistuneesti ${newName}!`,
-            errorType: 'success',
-          })
-          setTimeout(() => {
-            this.setState({error: null})
-          }, 5000)
-        })
-        .catch(error => {
-          this.setState({
-            error: `Kyseistä henkilöä ei enää löydy!`,
-            errorType: 'error',
-            persons: this.state.persons.filter(n => n.id !== id),
-          })
-          setTimeout(() => {
-            this.setState({error: null})
-          }, 5000)
-        })
-      }
-    } else {
-      personService.create(personObject)
-      .then(newPerson => {
-        this.setState({
-          persons: this.state.persons.concat(newPerson),
-          newName: '',
-          newNumber: '',
-          error: `Lisättiin onnistuneesti ${newName}!`,
-          errorType: 'success',
-        })
-        setTimeout(() => {
-          this.setState({error: null})
-        }, 5000)
-      })
-      .catch(error => {
-        this.setState({ error: `${error}`, errorType: 'error' })
-        setTimeout(() => {
-          this.setState({error: null})
-        }, 5000)
-    })
-    }
-  }
-  
-  removeNumber = ({ id, name }) => {
-    const result = window.confirm(`poistetaanko ${name}`);
-    if (result) {
-      personService.remove(id)
-        .then(response => {
-          this.setState({
-            persons: this.state.persons.filter(n => n.id !== id),
-            error: `Poistettiin onnistuneesti ${name}!`,
-            errorType: 'success',
-          })
-          setTimeout(() => {
-            this.setState({error: null})
-          }, 5000)
-        })
-        .catch(error => {
-          this.setState({
-            error: `Kyseistä henkilöä ei enää löydy!`,
-            errorType: 'error',
-            persons: this.state.persons.filter(n => n.id !== id),
-          })
-          setTimeout(() => {
-            this.setState({error: null})
-          }, 5000)
-        })
+      selected: 0,
+      points: [0, 0, 0, 0, 0, 0]
     }
   }
 
   render() {
-    const { persons, filterValue, newName, newNumber, error, errorType } = this.state
-    const personsToShow = filterValue.length ?
-      persons.filter(person => person.name.toLowerCase().includes(filterValue.toLowerCase()))
-      : persons
+    const { points, selected } = this.state
+    const indexOfMaxValue = points.indexOf(Math.max(...points));
+    const handleVote = () => {
+      const newPoints = [...points]
+      newPoints[selected] += 1
+      this.setState({ points: newPoints })
+    }
+    const handleClick = () => {
+      const nextNumber = Math.floor(Math.random() * 6)
+      this.setState({ selected: nextNumber })
+    }
     return (
       <div>
-        <h1>Puhelinluettelo</h1>
-        <Notification error={error} errorType={errorType} />
-        <Filter filterValue={filterValue} updateFilter={this.updateFilter} />
-        <h2>Lisää uusi</h2>
-          <AddNewForm
-            newName={newName}
-            newNumber={newNumber}
-            addNumber={this.addNumber}
-            updateName={this.updateName}
-            updateNumber={this.updateNumber} />
-        <h2>Numerot</h2>
-        <PersonsList persons={personsToShow} filter={filterValue} removeNumber={this.removeNumber} />
+        <Anecdote anecdote={this.props.anecdotes[selected]} votes={points[selected]} />
+        <Button handleClick={() => handleVote()} text={'Vote'} />
+        <Button handleClick={() => handleClick()} text={'Next anecdote'} />
+        <h1>anecdote with most votes:</h1>
+        <Anecdote anecdote={this.props.anecdotes[indexOfMaxValue]} votes={points[indexOfMaxValue]} />
       </div>
     )
   }
 }
 
-export default App
+const anecdotes = [
+  'If it hurts, do it more often',
+  'Adding manpower to a late software project makes it later!',
+  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
+  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
+  'Premature optimization is the root of all evil.',
+  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
+]
+
+ReactDOM.render(
+  <App anecdotes={anecdotes} />,
+  document.getElementById('root')
+)
