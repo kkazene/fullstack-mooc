@@ -3,6 +3,17 @@ import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
+const Notification = ({ error }) => {
+  if (error === null) {
+    return null
+  }
+  return (
+    <div>
+      {error}
+    </div>
+  )
+}
+
 const BlogForm = ({ addBlog, onChange, title, author, url }) => (
   <form onSubmit={addBlog}>
     <div>
@@ -44,7 +55,7 @@ class App extends React.Component {
       user: null,
       username: '',
       password: '',
-      error: '',
+      error: null,
       title: '',
       author: '',
       url: ''
@@ -113,7 +124,7 @@ class App extends React.Component {
       }, 5000)
       this.setState({ author: '', title: '', url: '' })
     } catch (e) {
-      this.setState({ error: e })
+      this.setState({ error: 'failed to add new blog' })
       setTimeout(() => {
         this.setState({ error: null })
       }, 5000)
@@ -151,11 +162,14 @@ class App extends React.Component {
 
     return (
       <div>
+        <Notification error={error} />
         { user === null ?
           loginForm()
           :
           <div>
-            <h2>blogs</h2>
+            <h2>Blogs</h2>
+            <p>{user.name} logged in <button onClick={this.logout}>logout</button></p>
+            <h2>Create new</h2>
             <BlogForm
               addBlog={this.addBlog}
               onChange={this.handleFieldChange}
@@ -163,8 +177,7 @@ class App extends React.Component {
               author={author}
               url={url}
             />
-
-            <p>{user.name} logged in</p><button onClick={this.logout}>logout</button>
+            <h2>Blog list</h2>
             {blogs.map(blog =>
               <Blog key={blog._id} blog={blog}/>
             )}

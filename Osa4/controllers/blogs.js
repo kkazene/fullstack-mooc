@@ -24,7 +24,7 @@ blogsRouter.post('/', async (request, response) => {
     }
 
     const body = request.body
-    if (body.title === undefined || body.url === undefined)
+    if (body.title === undefined || body.title === '' || body.url === undefined || body.url === '')
       return response.status(400).json({ error: 'content missing' })
     if (body.likes === undefined)
       body.likes = 0
