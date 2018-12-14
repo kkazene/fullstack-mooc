@@ -25,6 +25,7 @@ class Blog extends React.Component {
 
   render() {
     const { blogs, detailedBlog, toggleDetails, likeBlog } = this.props
+    blogs.sort((a, b) => b.likes - a.likes)
     return (
       <div>
         {blogs.map((blog) => (
