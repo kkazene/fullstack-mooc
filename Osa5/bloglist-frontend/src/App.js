@@ -160,9 +160,38 @@ class App extends React.Component {
     }
   }
 
+  likeBlog = async (blog) => {
+    try {
+      const newBlog = ({
+        _id: blog._id,
+        author: blog.author,
+        title: blog.title,
+        url: blog.url,
+        user: blog.user,
+        likes: (blog.likes) + 1
+      })
+      const updatedBlog = await blogService.update(newBlog._id, newBlog)
+      const blogs = this.state.blogs.filter(n => n._id !== newBlog._id)
+      this.setState({
+        blogs: blogs.concat(updatedBlog),
+        error: `Liked blog ${newBlog.title}!`
+      })
+      setTimeout(() => {
+        this.setState({ error: null })
+      }, 5000)
+    } catch (e) {
+      this.setState({
+        error: 'Something went wrong!'
+      })
+      setTimeout(() => {
+        this.setState({ error: null })
+      }, 5000)
+    }
+  }
+
   toggleDetails = (blog) => {
     if (this.state.detailedBlog === blog._id) {
-      this.setState({ detailedBlog: '' })
+      this.setState({ detailedBlog: null })
     } else
       this.setState({ detailedBlog: blog._id })
   }
@@ -208,6 +237,7 @@ class App extends React.Component {
               blogs={blogs}
               detailedBlog={detailedBlog}
               toggleDetails={this.toggleDetails}
+              likeBlog={this.likeBlog}
             />
           </div>
         }

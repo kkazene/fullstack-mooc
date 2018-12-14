@@ -13,10 +13,10 @@ const SimpleBlog = ({ blog, toggleDetails }) => (
   </div>
 )
 
-const DetailedBlog = ({ blog, toggleDetails }) => (
+const DetailedBlog = ({ blog, toggleDetails, likeBlog }) => (
   <div style={blogStyle} onClick={() => toggleDetails(blog)}>
     <p>{blog.title}: {blog.author}</p>
-    <p>{blog.likes} likes <button>like</button></p>
+    <p>{blog.likes} likes <button onClick={() => likeBlog(blog)} >like</button></p>
     {blog.user && <p>added by {blog.user.name}</p>}
   </div>
 )
@@ -24,7 +24,7 @@ const DetailedBlog = ({ blog, toggleDetails }) => (
 class Blog extends React.Component {
 
   render() {
-    const { blogs, detailedBlog, toggleDetails } = this.props
+    const { blogs, detailedBlog, toggleDetails, likeBlog } = this.props
     return (
       <div>
         {blogs.map((blog) => (
@@ -32,7 +32,8 @@ class Blog extends React.Component {
             <DetailedBlog
               key={blog._id}
               blog={blog}
-              toggleDetails={toggleDetails} />
+              toggleDetails={toggleDetails}
+              likeBlog={likeBlog} />
             :
             <SimpleBlog
               key={blog._id}
