@@ -24,7 +24,7 @@ const reducer = (state = initialState, action) => {
     case 'VOTE':
       const a = state.find((s) => ( s.id === action.data ))
       const newA = { ...a, votes: a.votes + 1 }
-      return state.map(a => a.id !== action.data ? a : newA)
+      return state.map(a => a.id !== action.data ? a : newA).sort((a, b) => b.votes - a.votes)
   }
   
   return state
