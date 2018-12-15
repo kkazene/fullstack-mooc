@@ -1,6 +1,6 @@
 import React from 'react'
-import { shallow } from 'enzyme'
-import { Blog, SimpleBlog } from './Blog'
+import { mount } from 'enzyme'
+import { Blog, SimpleBlog, DetailedBlog } from './Blog'
 
 describe.only('Render blog component', () => {
   it('renders content', () => {
@@ -12,7 +12,7 @@ describe.only('Render blog component', () => {
     }]
     const mockHandler = jest.fn()
 
-    const blogComponent = shallow(
+    const blogComponent = mount(
       <Blog
         blogs={blogs}
         detailedBlog={null}
@@ -21,11 +21,11 @@ describe.only('Render blog component', () => {
       />)
     console.log(blogComponent.debug())
     const contentDiv = blogComponent.find(SimpleBlog)
-    console.log(contentDiv.debug())
-    // const likesDiv = blogComponent.find('.likes')
-
-    // expect(contentDiv.text()).toContain(blog.title)
-    // expect(contentDiv.text()).toContain(blog.author)
-    // expect(likesDiv.text()).toContain(blog.likes)
+    const clickableDiv = contentDiv.find('div')
+    console.log(clickableDiv.debug())
+    console.log(blogComponent.debug())
+    // tests are not going through since the real function isn't simulated.
+    const detailedDiv = blogComponent.find(DetailedBlog)
+    console.log(detailedDiv.debug())
   })
 })
