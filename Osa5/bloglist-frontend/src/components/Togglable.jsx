@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 export default class Togglable extends React.Component {
   constructor(props) {
@@ -28,4 +29,8 @@ export default class Togglable extends React.Component {
       </div>
     )
   }
+}
+
+Togglable.propTypes = {
+  buttonLabel: PropTypes.string
 }

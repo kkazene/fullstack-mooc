@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 const blogStyle = {
   paddingTop: 10,
@@ -48,6 +49,28 @@ class Blog extends React.Component {
       </div>
     )
   }
+}
+
+Blog.propTypes = {
+  blogs: PropTypes.array,
+  detailedBlog: PropTypes.string,
+  toggleDetails: PropTypes.func,
+  likeBlog: PropTypes.func,
+  deleteBlog: PropTypes.func,
+  user: PropTypes.object
+}
+
+DetailedBlog.propTypes = {
+  blog: PropTypes.object,
+  toggleDetails: PropTypes.func,
+  likeBlog: PropTypes.func,
+  deleteBlog: PropTypes.func,
+  user: PropTypes.object
+}
+
+SimpleBlog.propTypes = {
+  blog: PropTypes.object,
+  toggleDetails: PropTypes.func
 }
 
 export default Blog
