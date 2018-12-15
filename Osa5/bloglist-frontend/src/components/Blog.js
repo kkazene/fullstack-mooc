@@ -73,4 +73,4 @@ SimpleBlog.propTypes = {
   toggleDetails: PropTypes.func
 }
 
-export default Blog
+module.exports = { Blog, DetailedBlog, SimpleBlog }
