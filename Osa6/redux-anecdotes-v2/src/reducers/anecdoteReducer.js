@@ -44,6 +44,9 @@ const anecdoteReducer = (store = initialState, action) => {
 
     return [...store, { content: action.content, id: getId(), votes:0 }]
   }
+  if (action.type === 'FILTER') {
+    return store.filter(a => a.content.includes(action.content))
+  }
 
   return store
 }
