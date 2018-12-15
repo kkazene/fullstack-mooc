@@ -9,6 +9,13 @@ class App extends React.Component {
       data: id
     })
   }
+  addNew = (e) => {
+    e.preventDefault()
+    this.props.store.dispatch({
+      type: 'ADD_NEW',
+      data: e.target.content.value
+    })
+  }
   
   render() {
     const anecdotes = this.props.store.getState()
@@ -27,9 +34,9 @@ class App extends React.Component {
           </div>
         )}
         <h2>create new</h2>
-        <form>
-          <div><input /></div>
-          <button>create</button> 
+        <form onSubmit={this.addNew} >
+          <div><input name="content"/></div>
+          <button type="submit">create</button> 
         </form>
       </div>
     )
